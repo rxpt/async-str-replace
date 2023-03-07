@@ -1,0 +1,49 @@
+{
+  "name": "async-str-replace",
+  "version": "1.0.0",
+  "description": "A function to asynchronously replace multiple patterns in a string.",
+  "main": "src/index.ts",
+  "types": "types/index.d.ts",
+  "module": "dist/index.esm.js",
+  "browser": "dist/index.umd.min.js",
+  "type": "module",
+  "scripts": {
+    "build": "rollup --config",
+    "watch": "rollup --config --watch",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xogumon/async-str-replace.git"
+  },
+  "keywords": [
+    "async",
+    "replace",
+    "string",
+    "regex",
+    "pattern"
+  ],
+  "author": "Ronis Xogum <dev@xog.one>",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "^7.21.0",
+    "@babel/preset-env": "^7.20.2",
+    "@rollup/plugin-babel": "^6.0.3",
+    "@rollup/plugin-commonjs": "^24.0.1",
+    "@rollup/plugin-node-resolve": "^15.0.1",
+    "@rollup/plugin-terser": "^0.4.0",
+    "@rollup/plugin-typescript": "^11.0.0",
+    "@types/node": "^18.14.6",
+    "babel-loader": "^9.1.2",
+    "jest": "^29.5.0",
+    "rollup": "^3.18.0",
+    "rollup-plugin-dts": "^5.2.0",
+    "ts-jest": "^29.0.5",
+    "ts-node": "^10.9.1",
+    "tslib": "^2.5.0",
+    "typescript": "^4.9.5"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
