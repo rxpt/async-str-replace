@@ -1,3 +1,5 @@
+'use strict';
+
 var _assign = function __assign() {
   _assign = Object.assign || function __assign(t) {
     for (var s, i = 1, n = arguments.length; i < n; i++) {
@@ -255,5 +257,4 @@ function asyncStrReplace(string, replacers, options) {
     });
 }
 
-export { asyncStrReplace as default };
-rReplace;
+module.exports = asyncStrReplace;
