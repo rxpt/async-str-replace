@@ -1,11 +1,11 @@
 {
   "name": "async-str-replace",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "A function to asynchronously replace multiple patterns in a string.",
-  "main": "src/index.ts",
-  "types": "types/index.d.ts",
+  "main": "dist/index.cjs",
   "module": "dist/index.esm.js",
   "browser": "dist/index.umd.min.js",
+  "types": "types/index.d.ts",
   "type": "module",
   "scripts": {
     "build": "rollup --config",
