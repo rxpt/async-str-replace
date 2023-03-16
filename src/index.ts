@@ -1,3 +1,5 @@
+import AsyncReplace from "str-async-replace";
+
 type Replacer = {
   search: string | RegExp;
   replace: string | ((...args: any[]) => string | Promise<string>);
@@ -5,26 +7,17 @@ type Replacer = {
 };
 
 type Options = {
-  debug?: boolean;
   flags?: string;
 };
 
-export default async function asyncStrReplace(
+async function asyncStrReplace(
   string: string,
   replacers: Replacer[] | Replacer,
   options?: Options
 ): Promise<string> {
-  const opts: Options = { debug: false, flags: undefined, ...options };
+  const opts: Options = { flags: "g", ...options };
   const regexEscape = (s: string) =>
     s.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
-  const debug = (log: string | TypeError) => {
-    if (opts.debug) {
-      if (log instanceof TypeError) {
-        return console.error(`[asyncStrReplace] ${log.message}`);
-      }
-      console.log(`[asyncStrReplace] ${log}`);
-    }
-  };
 
   try {
     if (typeof string !== "string") {
@@ -53,36 +46,19 @@ export default async function asyncStrReplace(
         );
       }
 
-      const matches: [string, ...unknown[]][] = [];
-
-      string.replace(
-        search instanceof RegExp
-          ? search
-          : new RegExp(regexEscape(search), flags || opts.flags),
-        (...args: [string, ...unknown[]]) => {
-          matches.push(args);
-          return args[0]; // retorna a própria string que foi passada como parâmetro
-        }
-      );
-
-      if (matches.length === 0) debug("No matches found");
-
-      for (const args of matches) {
-        const [match] = args;
-        const response = async (replacer: any) =>
-          typeof replacer === "function"
-            ? await replacer(...args)
-            : replacer instanceof Promise
-            ? await replacer.then(async (replacer) => await response(replacer))
-            : replacer;
-        const replacer = await response(replace);
-        debug(`Replacing "${match}" with "${replacer}"`);
-        string = string.replace(match, replacer);
-      }
+      return (
+        await new AsyncReplace(string).replace(
+          search instanceof RegExp
+            ? search
+            : new RegExp(regexEscape(search), flags || opts.flags),
+          replace
+        )
+      ).toString();
     }
   } catch (error) {
-    debug(error);
     throw error;
   }
   return string;
 }
+
+export = asyncStrReplace;

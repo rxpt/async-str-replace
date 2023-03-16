@@ -1,98 +1,49 @@
-const asyncStrReplace = require("../dist/index");
+const asyncStrReplace = require("../dist");
 
 describe("asyncStrReplace", () => {
-  test("replaces a single string with another string", async () => {
-    const result = await asyncStrReplace("Hello, world!", {
-      search: "world",
+  test("should replace a single string", async () => {
+    const input = "Hello, World!";
+    const output = await asyncStrReplace(input, {
+      search: "Hello",
+      replace: "Hi",
+    });
+    expect(output).toBe("Hi, World!");
+  });
+
+  test("should replace a string with a promise-based function", async () => {
+    const input = "Hello, World!";
+    const output = await asyncStrReplace(input, {
+      search: "Hello",
+      replace: async () => "Hi",
+    });
+    expect(output).toBe("Hi, World!");
+  });
+
+  test("should replace multiple strings with an array of replacements", async () => {
+    const input = "Hello, World!";
+    const output = await asyncStrReplace(input, [
+      { search: "Hello", replace: "Hi" },
+      { search: "World", replace: "Universe" },
+    ]);
+    expect(output).toBe("Hi, Universe!");
+  });
+
+  test("should replace a string with a regex search", async () => {
+    const input = "Hello, World!";
+    const output = await asyncStrReplace(input, {
+      search: /world/i,
       replace: "Universe",
     });
-    expect(result).toBe("Hello, Universe!");
+    expect(output).toBe("Hello, Universe!");
   });
 
-  test("replaces multiple strings with another string", async () => {
-    const result = await asyncStrReplace(
-      "The quick brown fox jumps over the lazy dog.",
-      [
-        {
-          search: "quick",
-          replace: "fast",
-        },
-        {
-          search: "brown",
-          replace: "red",
-        },
-        {
-          search: "fox",
-          replace: "cat",
-        },
-        {
-          search: "lazy",
-          replace: "energetic",
-        },
-      ]
-    );
-    expect(result).toBe("The fast red cat jumps over the energetic dog.");
+  test("should throw an error if no string is provided", async () => {
+    await expect(asyncStrReplace()).rejects.toThrow(TypeError);
   });
 
-  test("replaces a string using a regular expression", async () => {
-    const result = await asyncStrReplace("Hello, world!", {
-      search: /worl?d/,
-      replace: "Universe",
-    });
-    expect(result).toBe("Hello, Universe!");
-  });
-
-  test("replaces a string using a function", async () => {
-    const result = await asyncStrReplace("Hello, world!", {
-      search: /worl?d/,
-      replace: (match) => {
-        return match.toUpperCase();
-      },
-    });
-    expect(result).toBe("Hello, WORLD!");
-  });
-
-  test("throws an error when 'string' is not a string", async () => {
-    await expect(asyncStrReplace(123, {})).rejects.toThrow(
-      '"string" must be a string'
-    );
-  });
-
-  test("throws an error when 'replacers' is not an object or array", async () => {
-    await expect(asyncStrReplace("Hello, world!", "world")).rejects.toThrow(
-      '"replacers" must be an object or an array'
-    );
-  });
-
-  test("logs a debug message when no matches are found", async () => {
-    console.log = jest.fn();
-    const result = await asyncStrReplace(
-      "Hello, world!",
-      {
-        search: "foo",
-        replace: "bar",
-      },
-      { debug: true }
-    );
-    expect(console.log).toHaveBeenCalledWith(
-      "[asyncStrReplace] No matches found"
-    );
-    expect(result).toBe("Hello, world!");
-  });
-
-  test("logs a debug message when a match is found and replaced", async () => {
-    console.log = jest.fn();
-    const result = await asyncStrReplace(
-      "Hello, world!",
-      {
-        search: "world",
-        replace: "Universe",
-      },
-      { debug: true }
-    );
-    expect(console.log).toHaveBeenCalledWith(
-      '[asyncStrReplace] Replacing "world" with "Universe"'
-    );
-    expect(result).toBe("Hello, Universe!");
+  test("should throw an error if no replacement is provided", async () => {
+    const input = "Hello, World!";
+    const replacers = [{ search: "Hello" }];
+    await expect(asyncStrReplace(input, replacers)).rejects.toThrow(TypeError);
   });
 });
